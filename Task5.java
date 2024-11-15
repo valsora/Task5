@@ -1,3 +1,6 @@
+import java.util.ArrayList;
+import java.util.Collections;
+
 public class Task5 {
     public static void main(String[] args) {
         System.out.println("1. " + sameLetterPattern("ABCBA", "BCDCB"));
@@ -6,8 +9,8 @@ public class Task5 {
         System.out.println("4. " + totalPoints(new String[] {"trance", "recant"}, "recant"));
         System.out.println("5. " + longestRun(new int[] {1, 2, 3, 5, 6, 7, 8, 9}));
         System.out.println(". ");
-        System.out.println(". ");
-        System.out.println(". ");
+        System.out.println("7. " + canMove("Queen", "C4", "D6"));
+        System.out.println("8. " + maxPossible(8732, 91255));
         System.out.println(". ");
         System.out.println(". ");
     }
@@ -94,5 +97,49 @@ public class Task5 {
             if (lengthDec > maxLengthDec) maxLengthDec = lengthDec;
         }
         return Math.max(maxLengthInc, maxLengthDec);
+    }
+
+    public static boolean canMove(String name, String from, String to) {
+        int fromLetter = Character.getNumericValue(from.charAt(0)) - 64;
+        int fromNumber = Character.getNumericValue(from.charAt(1));
+        int toLetter = Character.getNumericValue(to.charAt(0)) - 64;
+        int toNumber = Character.getNumericValue(to.charAt(1));
+        int letterShift = Math.abs(fromLetter - toLetter);
+        int numberShift = Math.abs(fromNumber - toNumber);
+        switch (name) {
+            case "Pawn":
+                return (fromLetter == toLetter && (fromNumber + 1 == toNumber || (fromNumber == 2 && toNumber == 4)));
+            case "Knight":
+                return ((letterShift == 1 && numberShift == 2) || (letterShift == 2 && numberShift == 1));
+            case "Bishop":
+                return (letterShift == numberShift);
+            case "Rook":
+                return (fromLetter == toLetter || fromNumber == toNumber);
+            case "Queen":
+                return (fromLetter == toLetter || fromNumber == toNumber || letterShift == numberShift);
+            case "King":
+                return (letterShift <= 1 && numberShift <= 1);
+            default:
+                return false;
+        }
+    }
+
+    public static int maxPossible(int a, int b) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        while (b > 0) {
+            arrayList.add(b % 10);
+            b /= 10;
+        }
+        Collections.sort(arrayList);
+        String s = Integer.toString(a);
+        for (int i = 0; i < s.length(); i++) {
+            if (arrayList.isEmpty()) return Integer.parseInt(s); 
+            int biggist = arrayList.getLast();
+            if (Character.getNumericValue(s.charAt(i)) < biggist) {
+                s = s.substring(0, i) + biggist + s.substring(i + 1);
+                arrayList.removeLast();
+            }
+        }
+        return Integer.parseInt(s);
     }
 }
